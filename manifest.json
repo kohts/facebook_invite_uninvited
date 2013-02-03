@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "Facebook Invite Uninvited",
+  "version": "0.2",
+  "description": "Invite uninvited friends to a Facebook event.",
+   "content_scripts": [
+     {
+        "matches": ["*://www.facebook.com/*"],
+       "js": ["all_friends.js"]
+    }  
+  ],   
+  "permissions":["tabs", "*://www.facebook.com/*"],
+  "icons" : {
+  },
+  
+  "content_security_policy": "script-src 'self'; object-src 'self'"
+}
