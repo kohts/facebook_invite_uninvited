@@ -12,6 +12,6 @@
   "permissions":["tabs", "*://www.facebook.com/*"],
   "icons" : {
   },
-  
+  "web_accessible_resources": ["load.gif"],
   "content_security_policy": "script-src 'self'; object-src 'self'"
 }

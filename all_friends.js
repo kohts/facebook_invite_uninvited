@@ -2,7 +2,7 @@
    var event_id;
    var observer = new WebKitMutationObserver(
      function(mutations) {
-       if(mutations.length) {
+       if(mutations.length){
          if(mutations[0].addedNodes.length){
            var fbBrowser = mutations[0].addedNodes[0].getElementsByClassName('fbProfileBrowser');
            if(fbBrowser.length>0){
@@ -18,19 +18,36 @@
              if(btns.length && event_id.length){
                btns=btns[0];
                if(btns.tagName.toLowerCase()=='td'){
-                 var a = document.createElement('a');
-                 a.href="javascript:;";
-                 a.addEventListener('click', select_friends);
-                 a.innerHTML="<span class=\"uiButtonText\">Select uninvited</span>";
-                 a.className="layerConfirm autofocus uiOverlayButton uiButton uiButtonConfirm uiButtonLarge";
-                 a.style.color="white";
-                 btns.appendChild(a);
+                 btns.width="50%";
+                 var tr = document.createElement('tr');
+                 btns.parentNode.parentNode.appendChild(tr);
+                 tr.innerHTML = "<td colspan=\"2\" style=\"padding-top:4px\"></td>";
+                 btns = tr.getElementsByTagName('td')[0];
+                 tr.appendChild(btns);
+                 btns.colspan = "2";
                  var clear = document.createElement('a');
+                 clear.style.float="right";
+                 clear.style.margin="0 0 0 4px";
+                 clear.style.width="44px";
                  clear.href="javascript:;";
                  clear.addEventListener('click', deselect_all);
-                 clear.innerHTML="<span class=\"uiButtonText\">Clear selected</span>";
+                 clear.innerHTML="<span class=\"uiButtonText\">Clear</span>";
                  clear.className="layerConfirm autofocus uiOverlayButton uiButton uiButtonLarge";
                  btns.appendChild(clear);
+                 var a = document.createElement('a');
+                 a.id="btn-select-uninvited";
+                 a.href="javascript:;";
+                 a.addEventListener('click', select_friends);
+                 a.innerHTML="<span class=\"uiButtonText\">Uninvited</span>";
+                 a.className="layerConfirm autofocus uiOverlayButton uiButton uiButtonConfirm uiButtonLarge";
+                 a.style.float="right";
+                 a.style.color="white";
+                 btns.appendChild(a);
+                 var label = document.createElement('label');
+                 label.id="label-select-uninvited";
+                 label.innerText = 'Selection:';
+		 label.style.float = 'right';
+                 btns.appendChild(label);
 
                }
              }
@@ -46,15 +63,20 @@
      for(var i=friends.length-1;i>=0;i--){
        if(friends[i].checked && friends[i].parentNode.className.indexOf('disabledCheckable')==-1){
          friends[i].click();
-
        }
      }
-
    };
 
-   var select_friends = function(){
+   function select_friends(){
      if(!event_id)
        return null;
+
+     var label = document.getElementById('label-select-uninvited');
+     var img = document.createElement('img');
+     img.src = chrome.extension.getURL('load.gif');
+     img.style.float = 'right';
+     label.parentElement.appendChild(img);
+
      var reg = /id=[0-9]+/g;
      var source, ids=[], tmp_ids=[], s, user_id;
 
@@ -63,7 +85,7 @@
      };
      user_id = s.match(/\"user\":\"[0-9]+/)[0].match(/[0-9]+/)[0];
 
-     var get_response = function(data){
+     function get_response(data){
        var fbBrowser = document.getElementsByClassName('fbProfileBrowser');
        if(fbBrowser.length>0){
          source = data.srcElement.responseText;
@@ -82,6 +104,8 @@
            }
          }
        }
+       img.parentElement.removeChild(img);
+
      };
 
      var number_friends = 0;
@@ -94,8 +118,10 @@
        function recur(){
          var l = document.getElementsByClassName('fbProfileBrowser')[0].getElementsByClassName('fbProfileBrowserResult')[1];
          if(l.getElementsByClassName('checkbox').length<number_friends){
-           l.scrollTop = l.scrollHeight-l.offsetHeight;
-           setTimeout(recur,1000);
+           var k0=l.scrollTop,
+           k1=l.scrollHeight;
+           l.scrollTop = k1;
+           setTimeout(recur,10);
          }
          else{
            request = new XMLHttpRequest();
@@ -108,11 +134,10 @@
 
 
      };
+
      request.open("GET", 'http://www.facebook.com/ajax/plans/typeahead/invite.php?include_all=true&plan_id='+event_id+'&__user='+user_id+'&__a=1&__req=2h', true);
      request.send(null);
 
-
-
      return null;
-   };
+   }
  })();
