@@ -47,6 +47,8 @@
                  label.id="label-select-uninvited";
                  label.innerText = 'Selection:';
 		 label.style.float = 'right';
+                 label.style.fontSize = '14px';
+                 label.style.padding = '4px';
                  btns.appendChild(label);
 
                }
@@ -75,6 +77,7 @@
      var img = document.createElement('img');
      img.src = chrome.extension.getURL('load.gif');
      img.style.float = 'right';
+     img.style.margin = '6px 0';
      label.parentElement.appendChild(img);
 
      var reg = /id=[0-9]+/g;
@@ -118,9 +121,6 @@
        function recur(){
          var l = document.getElementsByClassName('fbProfileBrowser')[0].getElementsByClassName('fbProfileBrowserResult')[1];
          if(l.getElementsByClassName('checkbox').length<number_friends){
-           var k0=l.scrollTop,
-           k1=l.scrollHeight;
-           l.scrollTop = k1;
            setTimeout(recur,10);
          }
          else{
@@ -129,6 +129,7 @@
            request.open("GET", '/ajax/browser/dialog/event_members/?id='+event_id+'&edge=temporal_groups%3Ainvitees_of_temporal_group&showstatus=0&__asyncDialog=1&__user='+user_id+'&__a=1&__req=a', true);
            request.send(null);
          }
+         l.scrollTop = l.scrollHeight;
        }
        recur();
 
