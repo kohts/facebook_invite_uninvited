@@ -1,17 +1,18 @@
-Facebook Invite Uninvited
+Invite uninvited friends to a Facebook event.
 
-This is an extension which allows convenient Selection of your friends
-while inviting them to a Facebook event. Currently implemented
-features are: "Select Uninvited", "Clear selection".
+This extension adds "Select All", "Select Uninvited", "Clear selection" buttons
+on the "Invite Friends" Facebook dialog screen when inviting your friends
+to the Facebook event.
 
-Usually if the event is public, people are allowed to invite
-their friends to the event, so people can be invited several times.
-"Select uninvited" button allows you to invite
-only those of your friends who haven't been invited yet,
-so you don't bug them too much.
+These buttons allow convenient manipulation of your friends list
+when inviting them to the Facebook event.
 
-When no people are invited to the event "Select uninvited"
-button behaves as "Select all" - selects all of your friends.
+Special feature of this extension is "Select Uninvited" button.
+
+Usually if the event is public, people are allowed to invite their friends
+to the event, so some people can be invited several times which might piss them off.
+"Select uninvited" button allows you to invite only those of your friends
+who haven't been invited yet, so you don't bug them too much.
 
 Published here:
 https://chrome.google.com/webstore/detail/facebook-invite-uninvited/okjnhbehpdaoibfmoioioomcefnejhho
