@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Facebook Invite Uninvited",
-  "version": "0.21",
+  "version": "0.22",
   "description": "Invite uninvited friends to a Facebook event.",
    "content_scripts": [
      {

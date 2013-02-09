@@ -39,14 +39,23 @@
                  a.href="javascript:;";
                  a.addEventListener('click', select_friends);
                  a.innerHTML="<span class=\"uiButtonText\">Uninvited</span>";
-                 a.className="layerConfirm autofocus uiOverlayButton uiButton uiButtonConfirm uiButtonLarge";
+                 a.className="layerConfirm autofocus uiOverlayButton uiButton uiButtonLarge";
                  a.style.float="right";
                  a.style.color="white";
                  btns.appendChild(a);
+                 var select_all = document.createElement('a');
+                 select_all.id="btn-select-all";
+                 select_all.href="javascript:;";
+                 select_all.addEventListener('click', select_all_l);
+                 select_all.innerHTML="<span class=\"uiButtonText\">All</span>";
+                 select_all.className="layerConfirm autofocus uiOverlayButton uiButton uiButtonLarge";
+                 select_all.style.float="right";
+                 select_all.style.color="white";
+                 btns.appendChild(select_all);
                  var label = document.createElement('label');
                  label.id="label-select-uninvited";
-                 label.innerText = 'Selection:';
-		 label.style.float = 'right';
+                 label.innerText = 'Select';
+                 label.style.float = 'right';
                  label.style.fontSize = '14px';
                  label.style.padding = '4px';
                  btns.appendChild(label);
@@ -59,7 +68,66 @@
      });
    observer.observe(document.body, {childList: true});
 
+   var select_all_l = function() {
+     if(!event_id)
+       return null;
+
+     var label = document.getElementById('label-select-uninvited');
+     var img = document.createElement('img');
+     img.src = chrome.extension.getURL('load.gif');
+     img.style.float = 'right';
+     img.style.margin = '6px 0';
+     label.parentElement.appendChild(img);
+
+     var reg = /id=[0-9]+/g;
+     var source, ids=[], tmp_ids=[], s, user_id;
+
+     for(var i=document.scripts.length-1; i--;i>=0){
+       s+=document.scripts[i].text;
+     };
+     user_id = s.match(/\"user\":\"[0-9]+/)[0].match(/[0-9]+/)[0];
+
+     var number_friends = 0;
+     var request = new XMLHttpRequest();
+
+     request.onload = function(data){
+       source = data.srcElement.responseText;
+       number_friends = source.match(/uid/g).length;
+
+       function recur(){
+         var l = document.getElementsByClassName('fbProfileBrowser')[0].getElementsByClassName('fbProfileBrowserResult')[1];
+         if(l.getElementsByClassName('checkbox').length<number_friends){
+           setTimeout(recur,10);
+         }
+         else{
+           var fbBrowser = document.getElementsByClassName('fbProfileBrowser');
+           var friends = fbBrowser[0].getElementsByClassName('checkbox');
+           for(var i=friends.length-1;i>=0;i--){
+             if(!friends[i].checked && friends[i].parentNode.className.indexOf('disabledCheckable')==-1){
+               friends[i].click();
+             }
+           }
+           img.parentElement.removeChild(img);
+         }
+         l.scrollTop = l.scrollHeight;
+       }
+       recur();
+     };
+
+     request.open("GET", 'http://www.facebook.com/ajax/plans/typeahead/invite.php?include_all=true&plan_id='+event_id+'&__user='+user_id+'&__a=1&__req=2h', true);
+     request.send(null);
+
+     return null;
+   };
+
    var deselect_all = function(){
+     var label = document.getElementById('label-select-uninvited');
+     var img = document.createElement('img');
+     img.src = chrome.extension.getURL('load.gif');
+     img.style.float = 'right';
+     img.style.margin = '6px 0';
+     label.parentElement.appendChild(img);
+
      var fbBrowser = document.getElementsByClassName('fbProfileBrowser');
      var friends = fbBrowser[0].getElementsByClassName('checkbox');
      for(var i=friends.length-1;i>=0;i--){
@@ -67,6 +135,7 @@
          friends[i].click();
        }
      }
+     img.parentElement.removeChild(img);
    };
 
    function select_friends(){
@@ -141,4 +210,5 @@
 
      return null;
    }
+
  })();
